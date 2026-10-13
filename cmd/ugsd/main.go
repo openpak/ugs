@@ -57,6 +57,9 @@ func main() {
 	mode := flag.String("mode", "forward", "forward (tap to real upstream) or refuse (404 everything)")
 	upstreamScheme := flag.String("upstream-scheme", "https", "upstream scheme (http only for local tests)")
 	timeout := flag.Duration("upstream-timeout", 20*time.Second, "upstream round-trip timeout")
+	connURL := flag.String("connectivity-url", "", "shared connectivity API base (empty disables relay integration)")
+	connTokenFile := flag.String("connectivity-token-file", "", "file holding this backend's connectivity bearer token (0600)")
+	connNamespace := flag.String("connectivity-namespace", "ugs", "backend namespace for participant leases")
 	flag.Parse()
 
 	client := &http.Client{Timeout: *timeout}
@@ -74,6 +77,13 @@ func main() {
 		forward(client, *upstreamScheme, w, r)
 	})
 	log.Printf("ugsd listening %s health %s mode %s", *addr, *healthAddr, *mode)
+	if *connURL == "" {
+		log.Print("connectivity: disabled (no -connectivity-url); relay allocations cannot be served")
+	} else if *connTokenFile == "" {
+		log.Fatalf("connectivity: -connectivity-url needs -connectivity-token-file")
+	} else {
+		log.Printf("connectivity: namespace %s via %s (token file configured)", *connNamespace, *connURL)
+	}
 
 	go func() {
 		h := http.NewServeMux()

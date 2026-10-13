@@ -17,6 +17,23 @@ First title: Gang Beasts (`0100D58012E12000`, v1.28.1) — UGS-only,
 measured 2026-10-13 (no NEX dial; system `ssl` service; invite path
 crashes the guest — see `docs/provenance.md`).
 
+## Shared connectivity
+
+Relay transport does not live here. When this backend serves relay
+allocations (M2), each allocation becomes a participant lease in the
+shared [`servers/connectivity`](../connectivity/) service — namespace
+`ugs`, one lease per authenticated player per connection generation, even
+behind a shared public IP — and same-household pairs get a verified native
+pair relay whose endpoint is what the clients are handed. TURN credentials
+come from `POST /v1/ice`. The Unity relay handshake the client already
+speaks is the native verification path: no bind without destination proof,
+per the shared plan (`docs/shared-connectivity-plan.md`).
+
+Wiring today is the seam only: `-connectivity-url` +
+`-connectivity-token-file` (0600, bearer token, one namespace per backend —
+never shared across backends). Unset means relay integration is off and the
+startup log says so. Live calls land with M2.
+
 ## Clean room
 
 Read `CLEANROOM.md` before touching this tree. The short version: our own
