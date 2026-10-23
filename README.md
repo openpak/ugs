@@ -27,7 +27,7 @@ behind a shared public IP — and same-household pairs get a verified native
 pair relay whose endpoint is what the clients are handed. TURN credentials
 come from `POST /v1/ice`. The Unity relay handshake the client already
 speaks is the native verification path: no bind without destination proof,
-per the shared plan (`docs/shared-connectivity-plan.md`).
+per the shared connectivity plan (internal research notes).
 
 Wiring today is the seam only: `-connectivity-url` +
 `-connectivity-token-file` (0600, bearer token, one namespace per backend —
