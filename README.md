@@ -5,7 +5,7 @@ resolve to OpenPak. One process serves every Unity hostname a title uses,
 dispatching on the TLS SNI / HTTP Host Traefik hands it.
 
 Status: **M1 tap** (see `prds/ugs-backend-prd.md`). It terminates the
-guest-facing HTTPS the way `servers/t17` and `servers/klei` do (Traefik
+guest-facing HTTPS the way `servers/t17` and `platforms/switch/games/klei` do (Traefik
 ends the console TLS, plain HTTP on **22680** inside the pod network,
 health on **22681**), logs the *shape* of each call — method, host, path
 shape, query key names, sizes, status, duration — and forwards the call
@@ -21,7 +21,7 @@ crashes the guest — see `docs/provenance.md`).
 
 Relay transport does not live here. When this backend serves relay
 allocations (M2), each allocation becomes a participant lease in the
-shared [`servers/connectivity`](../connectivity/) service — namespace
+shared [`openpak/connectivity`](../../../../platforms/core/infra/connectivity/) service — namespace
 `ugs`, one lease per authenticated player per connection generation, even
 behind a shared public IP — and same-household pairs get a verified native
 pair relay whose endpoint is what the clients are handed. TURN credentials

@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # OpenPak's Unity Gaming Services backend. Plain HTTP inside the pod network —
 # Traefik terminates the guest's TLS for the Unity hostnames, the same arrangement
-# as servers/t17 and servers/klei.
+# as servers/t17 and platforms/switch/games/klei.
 FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS build
 ARG TARGETOS TARGETARCH
 WORKDIR /src
