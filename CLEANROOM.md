@@ -24,7 +24,7 @@ Rules for every change in this tree:
   endpoint paths, field names and types, flows, error codes. Never file
   layout, package splits, type or function names beyond the wire, table
   schemas, or handler shapes.
-- Every non-obvious fact kept here is recorded in `docs/provenance.md`
+- Every non-obvious fact kept here is recorded in `docs/protocol.md`
   with its source: our capture (date, title, build) or the public document
   (title, section). A fact the wire contradicts loses, whoever stated it.
 - Bodies, tokens, identifiers and player data never enter logs or committed

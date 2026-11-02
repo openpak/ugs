@@ -38,10 +38,7 @@ go test ./...
 ## Docs
 
 - [Protocol](docs/protocol.md)
-- [Evidence](docs/evidence.md)
 - [Deploy](docs/deploy.md)
-- [Notes](docs/notes.md)
-- [Provenance](docs/provenance.md)
 
 Live compatibility status: [openpak.org/titles](https://openpak.org/titles).
 

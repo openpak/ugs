@@ -28,7 +28,7 @@ import (
 var upstreamOverride = ""
 
 // knownHosts is the Unity surface measured on Gang Beasts v1.28.1
-// (docs/provenance.md). Hosts only — paths and fields come from the tap.
+// (docs/protocol.md). Hosts only — paths and fields come from the tap.
 var knownHosts = map[string]bool{
 	"player-auth.services.api.unity.com":      true,
 	"wire.unity3d.com":                        true,
