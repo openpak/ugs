@@ -6,9 +6,9 @@ The service a Unity-online Switch title reaches when its Unity hostnames
 resolve to OpenPak. One process serves every Unity hostname a title uses,
 dispatching on the TLS SNI / HTTP Host Traefik hands it.
 
-## Status
+## Behaviour
 
-Status: **M1 tap** (see `prds/ugs-backend-prd.md`). It terminates the
+The service is a tap (see `prds/ugs-backend-prd.md`). It terminates the
 guest-facing HTTPS the way `servers/t17` and `platforms/switch/games/klei` do (Traefik
 ends the console TLS, plain HTTP on **22680** inside the pod network,
 health on **22681**), logs the *shape* of each call — method, host, path
