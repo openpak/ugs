@@ -20,6 +20,7 @@ import (
 	"strings"
 	"time"
 
+	"openpak/ugs/internal/httplog"
 	"openpak/ugs/tap"
 )
 
@@ -30,12 +31,12 @@ var upstreamOverride = ""
 // knownHosts is the Unity surface measured on Gang Beasts v1.28.1
 // (docs/protocol.md). Hosts only — paths and fields come from the tap.
 var knownHosts = map[string]bool{
-	"player-auth.services.api.unity.com":      true,
-	"wire.unity3d.com":                        true,
-	"lobby.services.api.unity.com":            true,
+	"player-auth.services.api.unity.com":       true,
+	"wire.unity3d.com":                         true,
+	"lobby.services.api.unity.com":             true,
 	"relay-allocations.services.api.unity.com": true,
-	"qos-discovery.services.api.unity.com":    true,
-	"multiplay.services.api.unity.com":        true,
+	"qos-discovery.services.api.unity.com":     true,
+	"multiplay.services.api.unity.com":         true,
 }
 
 type counter struct {
@@ -95,7 +96,7 @@ func main() {
 			log.Fatalf("health: %v", err)
 		}
 	}()
-	if err := http.ListenAndServe(*addr, mux); err != nil {
+	if err := http.ListenAndServe(*addr, httplog.Middleware(mux)); err != nil {
 		log.Fatalf("serve: %v", err)
 	}
 }
@@ -165,7 +166,8 @@ func upstreamAuthority(host string) string {
 	return host
 }
 
-func clientAddr(r *http.Request) string {	if h, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
+func clientAddr(r *http.Request) string {
+	if h, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
 		return h
 	}
 	return r.RemoteAddr
