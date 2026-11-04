@@ -67,6 +67,7 @@ func main() {
 			w.Header().Set("Content-Type", "application/json")
 			fmt.Fprint(w, `{"status":"ok"}`)
 		})
+		h.HandleFunc("/internal/accounts/", eraseHandler("ugs", eraseNothing))
 		if err := http.ListenAndServe(*healthAddr, h); err != nil {
 			log.Fatalf("health: %v", err)
 		}

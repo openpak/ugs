@@ -26,3 +26,9 @@ go test ./...
 ## Publishing
 
 A `v*.*.*` tag publishes `ghcr.io/openpak/ugs:latest` (amd64 and arm64); the box runs it from the quadlet `openpak-ugs` (AutoUpdate=registry). Traefik routes the seven hostnames (SNI) to port 22680 with one OpenPak-CA leaf (`ugs.pem`); the Switch profile lists `.unity.com` and `.unity3d.com` (signed ceiling). The relay transport is not part of this service yet.
+
+## Account erasure
+
+`DELETE /internal/accounts/{account_id}/data` on the health listener (`http://openpak-ugs:22681`, not routed by Traefik), header `Authorization: Bearer <ACCOUNT_ERASE_KEY>`; key unset answers 503. Always answers `{"service":"ugs","rows":0}` and logs one `account erased` line.
+
+Why a no-op: sign-in is anonymous (`POST /v1/authentication/anonymous` and `external-token` both mint a random player id and read no identity from the request); `ugs.players`, `sessions`, `lobbies` (host), `tickets` and `allocations` are keyed by those random ids and have no account, BAAS, console or vendor-account column, so no row can be linked to an OpenPak account. Lobbies expire after 10 minutes idle, tickets and allocations after a day (Sweep).
