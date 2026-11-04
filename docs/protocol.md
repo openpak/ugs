@@ -2,25 +2,19 @@
 
 ## Hosts
 
-Unity hostnames the service answers, from `knownHosts` in `cmd/ugsd/main.go`. The surface was measured on Gang Beasts v1.28.1 (see Captures below). Any other host, and every host in `-mode refuse`, gets `404 unknown host`.
+Unity hostnames the service answers. The first six were measured on Gang Beasts v1.28.1 (see Captures below); `matchmaker` was seen resolving in the Harbor sweep of 2026-11-03. Any other host gets `404 unknown host`.
 
-- `player-auth.services.api.unity.com`
-- `wire.unity3d.com`
-- `lobby.services.api.unity.com`
-- `relay-allocations.services.api.unity.com`
-- `qos-discovery.services.api.unity.com`
-- `multiplay.services.api.unity.com`
+- `player-auth.services.api.unity.com`: anonymous sign-in, session refresh, external-token (every console is a new anonymous player), link/unlink, `GET /v1/users/{id}`. The idToken is an HS256 JWT (`sub` = player id) the other hosts check as `Authorization: Bearer`.
+- `lobby.services.api.unity.com`: `/v1/lobbies` (and under `/lobby/v1`): create, get, update, delete, heartbeat, join by id/code, quickjoin, query, player update/leave. Lobbies without a heartbeat for 60 s drop out of queries.
+- `relay-allocations.services.api.unity.com`: allocations, join codes, join, regions. 503 until `UGS_RELAY_HOST` is set.
+- `qos-discovery.services.api.unity.com`: `GET /v1/qos-servers`.
+- `matchmaker.services.api.unity.com`: `/v1|v2/tickets` create, poll, delete. Two or more waiting tickets of a queue (or one waiting 20 s) form a match whose assignment is the relay endpoint.
+- `wire.unity3d.com`: configuration and analytics sink; accepted and dropped, nothing stored.
+- `multiplay.services.api.unity.com`: no dedicated servers are run; every call is 404 and logged.
 
-## Forward mode
+## Status of the shapes
 
-In the default `-mode forward`, a call to a known host goes to the same host over `-upstream-scheme` with method, path, query, headers and body unchanged. The upstream status, headers and body stream back to the caller. Hop-by-hop headers are not copied. Only the call's shape is logged (see the `tap` package).
-
-## Endpoints and message shapes
-
-Nothing recorded yet. The service is a tap: it logs the shape of each call (method, host, path
-shape, query key names, sizes, status, duration) and forwards it untouched, so the game keeps
-working while the contract is recorded. Bodies, tokens and identifiers never reach the log; `tap`
-enforces that by construction with tests.
+Request and response shapes come from Unity's public REST documentation, not from a capture of the game; the first Harbor run against this service will show which paths and fields the game really uses (`ugs unserved` lines list every miss). Open, and needing a capture: the exact path and field set per host as the game sends them (decrypted TLS plaintext of the seven hosts, kept outside the repository), and the UDP relay transport (handshake and framing the client speaks to the endpoint it is handed). Until the relay transport exists, a match can be formed but a player cannot connect through it.
 
 ## Shared connectivity
 
